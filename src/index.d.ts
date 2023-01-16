@@ -5,6 +5,7 @@ import type {
 
 export function awsIamAuthenticator(
   region: string,
+  credentials: any,
   ttl?: string
 ): (args: AuthenticationProviderArgs) => Authenticator;
 

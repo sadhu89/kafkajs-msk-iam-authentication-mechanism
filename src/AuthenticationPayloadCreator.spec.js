@@ -3,12 +3,12 @@ const { AuthenticationPayloadCreator } = require('./AuthenticationPayloadCreator
 
 describe('AuthenticationPayloadCreator', () => {
   const region = 'us-east-1'
-  const authenticationPayloadCreator = new AuthenticationPayloadCreator({ region })
   const credentials = {
     accessKeyId: 'accessKeyId',
     sessionToken: 'sessionToken',
     secretAccessKey: 'secretAccessKey'
   }
+  const authenticationPayloadCreator = new AuthenticationPayloadCreator({ region, credentials })
 
   beforeAll(() => {
     MockDate.set('2021-01-01')
@@ -19,10 +19,9 @@ describe('AuthenticationPayloadCreator', () => {
   })
 
   describe('create', () => {
-    let providerSpy, signatureProviderSpy
+    let signatureProviderSpy
 
     beforeEach(() => {
-      providerSpy = jest.spyOn(authenticationPayloadCreator, 'provider').mockResolvedValue(credentials)
       signatureProviderSpy = jest.spyOn(authenticationPayloadCreator.signature, 'credentialProvider').mockResolvedValue(credentials)
     })
 
@@ -30,7 +29,6 @@ describe('AuthenticationPayloadCreator', () => {
       const brokerHost = 'example.com'
       const payload = await authenticationPayloadCreator.create({ brokerHost })
 
-      expect(providerSpy).toHaveBeenCalled()
       expect(signatureProviderSpy).toHaveBeenCalled()
 
       expect(payload).toHaveProperty('version', '2020_10_22')
